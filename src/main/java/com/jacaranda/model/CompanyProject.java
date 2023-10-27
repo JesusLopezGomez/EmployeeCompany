@@ -33,11 +33,11 @@ public class CompanyProject {
 		this.company = company;
 	}
 
-	public Project getIdProject() {
+	public Project getProject() {
 		return project;
 	}
 
-	public void setIdProject(Project idProject) {
+	public void setProject(Project idProject) {
 		this.project = idProject;
 	}
 

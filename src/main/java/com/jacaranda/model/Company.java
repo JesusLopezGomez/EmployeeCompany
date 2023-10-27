@@ -27,7 +27,6 @@ public class Company {
 		return id;
 	}
 
-
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -70,6 +69,26 @@ public class Company {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
+	}
+
+
+	public List<Employee> getEmployees() {
+		return Employees;
+	}
+
+
+	public void setEmployees(List<Employee> employees) {
+		Employees = employees;
+	}
+
+
+	public List<CompanyProject> getCompanyProject() {
+		return companyProject;
+	}
+
+
+	public void setCompanyProject(List<CompanyProject> companyProject) {
+		this.companyProject = companyProject;
 	}
 
 
