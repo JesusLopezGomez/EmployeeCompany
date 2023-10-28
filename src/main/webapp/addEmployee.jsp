@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="../style/style.css">
 </head>
-
+<body>
 	<%
 		ArrayList<Company> result = null;
 			try{
@@ -88,6 +88,5 @@
 				<h1 class="text-info" align="center">Imposible conectar con la base de datos</h1>
 			<%}%>
 	
-<body>
 </body>
 </html>
