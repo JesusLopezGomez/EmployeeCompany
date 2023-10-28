@@ -20,60 +20,62 @@
 	ArrayList<Company> result = null;
 			try{
 				result2 = (ArrayList<CompanyProject>) DbRepository.findAll(CompanyProject.class);
-				result = (ArrayList<Company>) DbRepository.findAll(Company.class);
-			}catch(Exception e){
-		
-			}
-	%>
-	
-		<table class="table">
-		<thead>
-			<tr>
-				<th scope="col">Nombre</th>
-				<th scope="col">Num empleados</th>
-				<th scope="col">Num proyecto</th>
-			</tr>
-		</thead>
-		<%
-		for (Company c: result){
-		%>
-				<tr>
-					<td><%=c.getName()%></td>
-					<td><%=c.getEmpleados().size()%></td>
-					<td><%=c.getCompanyProject().size()%></td>
+				result = (ArrayList<Company>) DbRepository.findAll(Company.class);%>
+				<%@include file="./nav.jsp"%>
+				<table class="table">
+				<thead>
 					<tr>
-						<td>
-						<b>Empleados</b>
-						</td>
-						<tr>
-						 <%
-							for (Employee e: c.getEmpleados()){
-						%>
-							<tr>
-								<td><%=e.getFirstName()%></td>
-							</tr>
-						<%}%>
-						<td></td>
-						</tr>
+						<th scope="col">Nombre</th>
+						<th scope="col">Num empleados</th>
+						<th scope="col">Num proyecto</th>
 					</tr>
-										<tr>
-						<td>
-						<b>Projectos</b>
-						</td>
+				</thead>
+				<%
+				for (Company c: result){
+				%>
 						<tr>
-						 <%
-							for (CompanyProject e: c.getCompanyProject()){
-						%>
+							<td><%=c.getName()%></td>
+							<td><%=c.getEmpleados().size()%></td>
+							<td><%=c.getCompanyProject().size()%></td>
 							<tr>
-								<td><%=e.getProject().getName() + ", " + e.getProject().getButget()%></td>
+								<td>
+								<b>Empleados</b>
+								</td>
+								<tr>
+								 <%
+									for (Employee e: c.getEmpleados()){
+								%>
+									<tr>
+										<td><%=e.getFirstName()%></td>
+									</tr>
+								<%}%>
+								<td></td>
+								</tr>
 							</tr>
-						<%}%>
-						<td></td>
-						</tr>
-					</tr>
-				</tr>	
-		<%}%>			
-	</table>
+												<tr>
+								<td>
+								<b>Projectos</b>
+								</td>
+								<tr>
+								 <%
+									for (CompanyProject e: c.getCompanyProject()){
+								%>
+									<tr>
+										<td><%=e.getProject().getName() + ", " + e.getProject().getButget()%></td>
+									</tr>
+								<%}%>
+								<td></td>
+								</tr>
+							</tr>
+						</tr>	
+				<%}%>			
+			</table>
+				
+			<%}catch(Exception e){%>
+				<h1 class="text-info" align="center">Imposible conectar con la base de datos</h1>
+			<%}%>
+	
+	
 
 </body>
 </html>

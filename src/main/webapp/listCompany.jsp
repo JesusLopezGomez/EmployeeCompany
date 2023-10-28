@@ -18,43 +18,44 @@
 	<%
 	ArrayList<Company> result = null;
 			try{
-				result = (ArrayList<Company>) DbRepository.findAll(Company.class);
-			}catch(Exception e){
-		
-			}
-	%>
-
-	<table class="table">
-		<thead>
-			<tr>
-				<th scope="col">Id</th>
-				<th scope="col">Nombre</th>
-				<th scope="col">Direccion</th>
-				<th scope="col">Ciudad</th>
-				<th scope="col">Empleados</th>
-			</tr>
-		</thead>
-		<%
-		for (Company c: result){
-		%>
-				<tr>
-					<td><%=c.getId()%></td>
-					<td><%=c.getName()%></td>
-					<td><%=c.getAddress()%></td>
-					<td><%=c.getCity()%></td>
-					<td><table class="table">
-						<%
-							for (Employee e: c.getEmpleados()){
-						%>
+				result = (ArrayList<Company>) DbRepository.findAll(Company.class);%>
+				<%@include file="./nav.jsp"%>
+				<table class="table">
+					<thead>
 						<tr>
-						<td>
-							<%=e.getFirstName()%>
-						</td>
-						<tr>
-						<%}%>
-					</table>	
-					<td>
-		<%}%>			
-	</table>
+							<th scope="col">Id</th>
+							<th scope="col">Nombre</th>
+							<th scope="col">Direccion</th>
+							<th scope="col">Ciudad</th>
+							<th scope="col">Empleados</th>
+						</tr>
+					</thead>
+					<%
+					for (Company c: result){
+					%>
+							<tr>
+								<td><%=c.getId()%></td>
+								<td><%=c.getName()%></td>
+								<td><%=c.getAddress()%></td>
+								<td><%=c.getCity()%></td>
+								<td><table class="table">
+									<%
+										for (Employee e: c.getEmpleados()){
+									%>
+									<tr>
+									<td>
+										<%=e.getFirstName()%>
+									</td>
+									<tr>
+									<%}%>
+								</table>	
+								<td>
+					<%}%>			
+				</table>
+				
+			<%}catch(Exception e){%>
+				<h1 class="text-info" align="center">Imposible conectar con la base de datos</h1>
+			<%}%>
+	
 </body>
 </html>

@@ -16,38 +16,40 @@
 	<%
 	ArrayList<Employee> result = null;
 			try{
-				result = (ArrayList<Employee>) DbRepository.findAll(Employee.class);
-			}catch(Exception e){
-		
-			}
-	%>
+				result = (ArrayList<Employee>) DbRepository.findAll(Employee.class);%>
+				<%@include file="./nav.jsp"%>
+				<table class="table">
+					<thread>
+						<tr>
+							<th scope="col">Id</th>
+							<th scope="col">Nombre</th>
+							<th scope="col">Apellidos</th>
+							<th scope="col">Email</th>
+							<th scope="col">Género</th>
+							<th scope="col">Fecha de nacimiento</th>
+							<th scope="col">Nombre Compañía</th>
+			
+						</tr>
+					</thread>
+					<%
+					for (Employee e: result){
+					%>
+							<tr>
+								<td><%=e.getId()%></td>
+								<td><%=e.getFirstName()%></td>
+								<td><%=e.getLastName()%></td>
+								<td><%=e.getEmail()%></td>
+								<td><%=e.getGender()%></td>
+								<td><%=e.getDateOfBirth()%></td>
+								<td><%=e.getCompany().getName()%></td>
+							</tr>
+					<% }%>
+				</table>
+				
+			<%}catch(Exception e){%>
+				<h1 class="text-info" align="center">Imposible conectar con la base de datos</h1>
+			<%}%>
+	
 
-	<table class="table">
-		<thread>
-			<tr>
-				<th scope="col">Id</th>
-				<th scope="col">Nombre</th>
-				<th scope="col">Apellidos</th>
-				<th scope="col">Email</th>
-				<th scope="col">Género</th>
-				<th scope="col">Fecha de nacimiento</th>
-				<th scope="col">Nombre Compañía</th>
-
-			</tr>
-		</thread>
-		<%
-		for (Employee e: result){
-		%>
-				<tr>
-					<td><%=e.getId()%></td>
-					<td><%=e.getFirstName()%></td>
-					<td><%=e.getLastName()%></td>
-					<td><%=e.getEmail()%></td>
-					<td><%=e.getGender()%></td>
-					<td><%=e.getDateOfBirth()%></td>
-					<td><%=e.getCompany().getName()%></td>
-				</tr>
-		<% }%>
-	</table>
 </body>
 </html>
