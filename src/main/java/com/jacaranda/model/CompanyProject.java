@@ -1,7 +1,10 @@
 package com.jacaranda.model;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Objects;
+
+import com.jacaranda.exception.ExceptionCompanyProject;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -24,6 +27,18 @@ public class CompanyProject {
 	private Date begin;
 
 	private Date end;
+	
+	public CompanyProject(Company company, Project project, Date begin, Date end) throws ExceptionCompanyProject {
+		super();
+		this.company = company;
+		this.project = project;
+		setBegin(begin);
+		setEnd(end);
+	}
+
+	public CompanyProject() {
+		super();
+	}
 
 	public Company getCompany() {
 		return company;
@@ -45,7 +60,10 @@ public class CompanyProject {
 		return begin;
 	}
 
-	public void setBegin(Date begin) {
+	public void setBegin(Date begin) throws ExceptionCompanyProject {
+		if(begin.before(Date.valueOf(LocalDate.now()))) {
+			throw new ExceptionCompanyProject("Error la fecha inicio debe ser despues que la fecha de hoy.");
+		}
 		this.begin = begin;
 	}
 
@@ -53,7 +71,10 @@ public class CompanyProject {
 		return end;
 	}
 
-	public void setEnd(Date end) {
+	public void setEnd(Date end) throws ExceptionCompanyProject {
+		if(end.before(this.begin)) {
+			throw new ExceptionCompanyProject("Error la fecha final debe ser despues que la fecha inicio.");
+		}
 		this.end = end;
 	}
 

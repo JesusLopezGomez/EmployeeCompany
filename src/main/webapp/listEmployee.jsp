@@ -28,6 +28,8 @@
 							<th scope="col">Género</th>
 							<th scope="col">Fecha de nacimiento</th>
 							<th scope="col">Nombre Compañía</th>
+							<th scope="col">Editar</th>
+							<th scope="col">Eliminar</th>
 			
 						</tr>
 					</thread>
@@ -42,6 +44,8 @@
 								<td><%=e.getGender()%></td>
 								<td><%=e.getDateOfBirth()%></td>
 								<td><%=e.getCompany().getName()%></td>
+								<td><a href="editEmployee.jsp?id=<%=e.getId()%>"><button type="button" class="btn btn-primary btn-lg">Editar</button></a></td>
+								<td><a href="deleteEmployee.jsp?id=<%=e.getId()%>"><button type="button" class="btn btn-primary btn-lg">Eliminar</button></a></td>
 							</tr>
 					<% }%>
 				</table>

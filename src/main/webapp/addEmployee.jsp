@@ -3,13 +3,13 @@
 <%@page import="com.jacaranda.repository.DbRepository"%>
 <%@page import="com.jacaranda.model.Company"%>
 <%@page import="java.util.ArrayList"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Add Employee</title>
+<title>Añadir empleado</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="../style/style.css">
@@ -26,7 +26,7 @@
 				      <div class="card border-0 rounded-3 shadow-lg">
 				        <div class="card-body p-4">
 				          <div class="text-center">
-				            <div class="h1 fw-light">Add Employee</div>
+				            <div class="h1 fw-light">Añadir empleado</div>
 				          </div>
 				
 				          <form method="get">
@@ -58,7 +58,7 @@
 				            
 				            <div class="form-floating mb-3">
 								<label for="exampleInputEmail1" class="form-label">Company's</label>
-									<select id="companys" name="companys" required>
+									<select id="companys" name="companys" class="custom-select"  required>
 									<%
 										for (Company c : Companys ){
 									%>

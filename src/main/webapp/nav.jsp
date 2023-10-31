@@ -15,16 +15,19 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link text-white" href="./listEmployee.jsp">List Employee</a>
+        <a class="nav-link text-white" href="./listEmployee.jsp">Lista empleados</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white" href="./listCompany.jsp">List Company</a>
+        <a class="nav-link text-white" href="./listCompany.jsp">Lista compañias</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white" href="./listCompanyProject.jsp">List Company Project</a>
+        <a class="nav-link text-white" href="./listCompanyProject.jsp">Lista compañias empleados</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white" href="./addEmployee.jsp">Add Employeee</a>
+        <a class="nav-link text-white" href="./addEmployee.jsp">Añadir empleado</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="./addCompanyProject.jsp">Añadir compañias projectos</a>
       </li>
     </ul>
   </div>

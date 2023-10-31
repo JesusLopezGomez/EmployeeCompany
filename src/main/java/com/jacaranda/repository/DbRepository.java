@@ -13,7 +13,6 @@ public class DbRepository {
 
 	
 	public static <T> T find(Class<T> c, int id) throws Exception {
-		Transaction transaction = null;
 		Session session;
 		T result = null;
 		try {
@@ -78,5 +77,23 @@ public class DbRepository {
 		}
 		session.close();
 	}
+	
+	public static <T> void deleteEntity(Class<T> t,int id){
+		T result = null;
+		Session session = BdUtil.getSessionFactory().openSession();
+		Transaction transaction = null;
+		
+		SelectionQuery<T> q = session.createSelectionQuery("From " + t.getName() + " where id = :id",t);
+		q.setParameter("id", id);
+		List<T> data = q.getResultList();
+		if(data.size() != 0) {
+			transaction = session.beginTransaction();
+			result = data.get(0);
+			session.remove(result);
+			transaction.commit();
+		}
+		session.close();
+	}
+	
 	
 }
