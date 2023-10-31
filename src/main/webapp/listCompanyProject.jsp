@@ -16,11 +16,9 @@
 <body>
 
 	<%
-	ArrayList<CompanyProject> result2 = null;
-	ArrayList<Company> result = null;
+	ArrayList<Company> companys = null;
 			try{
-				result2 = (ArrayList<CompanyProject>) DbRepository.findAll(CompanyProject.class);
-				result = (ArrayList<Company>) DbRepository.findAll(Company.class);%>
+				companys = (ArrayList<Company>) DbRepository.findAll(Company.class);%>
 				<%@include file="./nav.jsp"%>
 				<table class="table">
 				<thead>
@@ -31,7 +29,7 @@
 					</tr>
 				</thead>
 				<%
-				for (Company c: result){
+				for (Company c: companys){
 				%>
 						<tr>
 							<td><%=c.getName()%></td>
@@ -71,9 +69,10 @@
 				<%}%>			
 			</table>
 				
-			<%}catch(Exception e){%>
-				<h1 class="text-info" align="center">Imposible conectar con la base de datos</h1>
-			<%}%>
+			<%}catch(Exception e){
+				response.sendRedirect("msgError.jsp?error="+e.getMessage());
+				return;
+			}%>
 	
 	
 

@@ -50,20 +50,6 @@ public class DbRepository {
 		return resultList;
 	}
 	
-	public static Company getCompany(String name) {
-		Company result = null;
-		Session session = BdUtil.getSessionFactory().openSession();
-
-		SelectionQuery<Company> q =
-				session.createSelectionQuery("From Company where name = :name", Company.class);
-				q.setParameter("name", name);
-				List<Company> companys = q.getResultList(); 
-				if(companys.size() != 0) {
-					result = companys.get(0);
-				}
-				session.close();
-				return result;
-	}
 	
 	public static <T> void addEntity(T t){
 		Transaction transaction = null; 
@@ -72,6 +58,20 @@ public class DbRepository {
 		transaction = session.beginTransaction();
 		try {
 			session.persist(t);
+			transaction.commit();
+		}catch (Exception e) {
+			transaction.rollback();
+		}
+		session.close();
+	}
+	
+	public static <T> void editEntity(T t){
+		Transaction transaction = null; 
+		Session session = BdUtil.getSessionFactory().openSession();
+
+		transaction = session.beginTransaction();
+		try {
+			session.merge(t);
 			transaction.commit();
 		}catch (Exception e) {
 			transaction.rollback();

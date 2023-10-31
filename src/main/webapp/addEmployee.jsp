@@ -16,9 +16,9 @@
 </head>
 <body>
 	<%
-		ArrayList<Company> result = null;
+		ArrayList<Company> Companys = null;
 			try{
-				result = (ArrayList<Company>) DbRepository.findAll(Company.class);%>
+				Companys = (ArrayList<Company>) DbRepository.findAll(Company.class);%>
 				<%@include file="./nav.jsp"%>
 				<div class="container px-5 my-5">
 				  <div class="row justify-content-center">
@@ -60,9 +60,9 @@
 								<label for="exampleInputEmail1" class="form-label">Company's</label>
 									<select id="companys" name="companys" required>
 									<%
-										for (Company c : result ){
+										for (Company c : Companys ){
 									%>
-									  <option><%=c.getName()%></option>
+									  <option value="<%=c.getId()%>"><%=c.getName()%></option>
 									 <%}%>
 									</select>
 				            </div>
@@ -77,16 +77,33 @@
 				  </div>
 				</div>
 	          <%if(request.getParameter("submit") != null){ 
-	          		DbRepository.addEntity(new Employee(request.getParameter("fisrtName"),
-	          											request.getParameter("lastName"),
-	          											request.getParameter("email"),
-	          											request.getParameter("gender"),
-	          											Date.valueOf(request.getParameter("dateOfBirth")),
-	          											DbRepository.getCompany(request.getParameter("companys"))));
+	        	  	String name = request.getParameter("fisrtName");
+	        	  	String lastName = request.getParameter("lastName");
+	        	  	String mail = request.getParameter("email");
+	        	  	String gender = request.getParameter("gender");
+	        	  	int id = Integer.valueOf(request.getParameter("companys"));;
+	        	  	Date date;
+	        	  	
+	        	  	try{	        	  		
+		        	  	date = Date.valueOf(request.getParameter("dateOfBirth"));
+	        	  	}catch(Exception e){
+	    				response.sendRedirect("msgError.jsp?error=Fecha erronea formato adecuado : yyyy-mm-dd");
+	    				return;
+	        	  	}
+
+	        	  	Company c = DbRepository.find(Company.class, id);
+	        	  	
+	          		DbRepository.addEntity(new Employee(name,
+	          											lastName,
+	          											mail,
+	          											gender,
+	          											date,
+	          											c));
 	          }%>	
-			<%}catch(Exception e){%>
-				<h1 class="text-info" align="center">Imposible conectar con la base de datos</h1>
-			<%}%>
+			<%}catch(Exception e){
+				response.sendRedirect("msgError.jsp?error="+e.getMessage());
+				return;
+			}%>
 	
 </body>
 </html>

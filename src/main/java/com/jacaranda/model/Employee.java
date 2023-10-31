@@ -24,8 +24,7 @@ public class Employee {
 	@ManyToOne
 	@JoinColumn(name="idCompany")
 	private Company company;
-	
-
+		
 	public Employee(String firstName, String lastName, String email, String gender, Date dateOfBirth,
 			Company company) {
 		super();
