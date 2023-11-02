@@ -18,6 +18,9 @@
 			try{
 				employes = (ArrayList<Employee>) DbRepository.findAll(Employee.class);%>
 				<%@include file="./nav.jsp"%>
+				<%if(session.getAttribute("rol") != null){%>
+					
+				
 				<table class="table">
 					<thread>
 						<tr>
@@ -28,8 +31,10 @@
 							<th scope="col">Género</th>
 							<th scope="col">Fecha de nacimiento</th>
 							<th scope="col">Nombre Compañía</th>
+							<%if(session.getAttribute("rol").equals("ADMIN")){ %>
 							<th scope="col">Editar</th>
 							<th scope="col">Eliminar</th>
+							<%} %>
 			
 						</tr>
 					</thread>
@@ -44,11 +49,16 @@
 								<td><%=e.getGender()%></td>
 								<td><%=e.getDateOfBirth()%></td>
 								<td><%=e.getCompany().getName()%></td>
+								<%if(session.getAttribute("rol").equals("ADMIN")){ %>
 								<td><a href="editEmployee.jsp?id=<%=e.getId()%>"><button type="button" class="btn btn-primary btn-lg">Editar</button></a></td>
 								<td><a href="deleteEmployee.jsp?id=<%=e.getId()%>"><button type="button" class="btn btn-primary btn-lg">Eliminar</button></a></td>
+								<%}%>
 							</tr>
-					<% }%>
+					<%}session.removeAttribute("rol");%>
 				</table>
+				<%}else{
+					response.sendRedirect("./login.jsp");
+				}%>
 				
 			<%}catch(Exception e){
 				response.sendRedirect("msgError.jsp?error="+e.getMessage());

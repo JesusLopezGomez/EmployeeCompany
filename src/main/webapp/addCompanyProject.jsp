@@ -1,3 +1,4 @@
+<%@page import="org.hibernate.engine.jdbc.spi.SqlExceptionHelper"%>
 <%@page import="com.jacaranda.model.CompanyProject"%>
 <%@page import="com.jacaranda.model.Project"%>
 <%@page import="java.sql.Date"%>
