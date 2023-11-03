@@ -7,6 +7,7 @@ import org.hibernate.Transaction;
 import org.hibernate.query.SelectionQuery;
 
 import com.jacaranda.model.CompanyProject;
+import com.jacaranda.model.Employee;
 import com.jacaranda.utiliy.BdUtil;
 
 public class DbRepository {

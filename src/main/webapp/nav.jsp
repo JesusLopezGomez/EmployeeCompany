@@ -29,6 +29,9 @@
       <li class="nav-item">
         <a class="nav-link text-white" href="./addCompanyProject.jsp">Añadir compañias projectos</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="./addHoursProject.jsp">Añadir horas projecto</a>
+      </li>
     </ul>
   </div>
 </nav>

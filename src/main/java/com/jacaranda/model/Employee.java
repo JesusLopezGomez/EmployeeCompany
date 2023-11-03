@@ -1,12 +1,16 @@
 package com.jacaranda.model;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Objects;
+
+import com.jacaranda.exception.ExceptionUser;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,11 +24,14 @@ public class Employee {
 	private String email;
 	private String gender;
 	private Date dateOfBirth;
+	private String password;
+	private String role;
 	
 	@ManyToOne
 	@JoinColumn(name="idCompany")
 	private Company company;
-		
+	
+	
 	public Employee(int id, String firstName, String lastName, String email, String gender, Date dateOfBirth,
 			Company company) {
 		super();
@@ -35,6 +42,20 @@ public class Employee {
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
 		this.company = company;
+	}
+	
+	public Employee(int id, String firstName, String lastName, String email, String gender, Date dateOfBirth,
+			Company company, String password, String rol) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.gender = gender;
+		this.dateOfBirth = dateOfBirth;
+		this.company = company;
+		this.password = password;
+		this.role = rol;
 	}
 	
 	public Employee(String firstName, String lastName, String email, String gender, Date dateOfBirth,
@@ -106,6 +127,22 @@ public class Employee {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) throws ExceptionUser {
+		this.password = password;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String rol) {
+		this.role = rol;
 	}
 
 	@Override

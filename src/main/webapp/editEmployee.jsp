@@ -68,8 +68,8 @@
 		}
 	}
 	
-	
-	
+	//if(session.getAttribute("rol") != null){
+
 	%>
 		<div class="container px-5 my-5">
 		  <div class="row justify-content-center">
@@ -138,6 +138,7 @@
 		          </form>
 		          <!-- End of contact form -->
 		        </div>
+		        <%//}%>
 		      </div>
 		    </div>
 		  </div>
