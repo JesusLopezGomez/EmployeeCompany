@@ -31,6 +31,8 @@ public class Employee {
 	@JoinColumn(name="idCompany")
 	private Company company;
 	
+	@OneToMany(mappedBy="employee")
+	private List<EmployeeProject> employeeProject;
 	
 	public Employee(int id, String firstName, String lastName, String email, String gender, Date dateOfBirth,
 			Company company) {

@@ -1,3 +1,8 @@
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.chrono.ChronoLocalDateTime"%>
+<%@page import="java.time.temporal.ChronoUnit"%>
+<%@page import="java.time.LocalDateTime"%>
+<%@page import="java.sql.Date"%>
 <%@page import="com.jacaranda.model.CompanyProject"%>
 <%@page import="com.jacaranda.model.Project"%>
 <%@page import="com.jacaranda.model.Employee"%>
@@ -14,7 +19,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-	<%if(session.getAttribute("employee")!= null){%>
+	<%if(session.getAttribute("employee") != null){%>
 		<div class="container px-5 my-5">
 		  <div class="row justify-content-center">
 		    <div class="col-lg-8">
@@ -26,21 +31,38 @@
 		          <form>
 		            <div class="form-floating mb-3">
 						<label for="exampleInputEmail1" class="form-label">Project's</label>
-							<select id="companys" name="projects" class="custom-select"  required>
+							<select id="companys" name="projects" class="custom-select" >
 							<%
 								Employee e = (Employee) session.getAttribute("employee");
 								for (CompanyProject cp : e.getCompany().getCompanyProject()){
+									if(cp.getEnd().after(Date.valueOf(LocalDate.now()))){
 							%>
 							  <option value="<%=cp.getProject().getName()%>"><%=cp.getProject().getName()%></option>
+							 	<%}%>
 							 <%}%>
 							</select>
 		            </div>		          
 		            <!-- Submit button -->
 		            <div class="d-grid">
 		            <%if(request.getParameter("start") == null){%>
-		             	<button class="btn btn-primary btn-lg" id="start" value="login" type="submit" name="start">Start</button>
-		            <%}else{%>
-		            	<button class="btn btn-danger btn-lg" id="stop" value="login" type="submit" name="stop">Stop</button>
+		             	<button class="btn btn-primary btn-lg" id="start" value="start" type="submit" name="start">Start</button>
+		            <%}else{
+		            	LocalDateTime ldt = LocalDateTime.now();
+		            	session.setAttribute("time", ldt);
+		            %>
+		            	<button class="btn btn-danger btn-lg" id="stop" value="stop" type="submit" name="stop">Stop</button>
+		            <%}%>
+		            <%if(request.getParameter("stop") != null){%>
+		            	<%
+		            	if(session.getAttribute("time")!= null){
+		            		int seconds = (int) ChronoUnit.SECONDS.between(((LocalDateTime) session.getAttribute("time")), 
+		            														LocalDateTime.now());
+		            		out.println(seconds);
+			            	session.setAttribute("cont",(int)session.getAttribute("cont")+seconds);
+		            		out.println(session.getAttribute("cont"));
+			            	session.removeAttribute("time");
+		            	}
+		            	%>
 		            <%}%>
 		            </div>
 		          </form>
