@@ -8,6 +8,7 @@ import org.hibernate.query.SelectionQuery;
 
 import com.jacaranda.model.CompanyProject;
 import com.jacaranda.model.Employee;
+import com.jacaranda.model.EmployeeProject;
 import com.jacaranda.utiliy.BdUtil;
 
 public class DbRepository {
@@ -67,6 +68,24 @@ public class DbRepository {
 		return result;
 	}
 	
+	public static EmployeeProject find(EmployeeProject ep) throws Exception {
+		Session session;
+		EmployeeProject result = null;
+		try {
+			session = BdUtil.getSessionFactory().openSession();
+
+		}catch (Exception e) {
+			throw new Exception("Error en la base de datos");
+		}
+		
+		try {
+			result = session.find(EmployeeProject.class,ep);
+		} catch (Exception e) {
+			throw new Exception("Error al obtener la entidad");
+		}
+		return result;
+	}
+	
 	public static <T> List<T> findAll(Class<T> c) throws Exception {
 		Transaction transaction = null;
 		Session session;
@@ -114,6 +133,7 @@ public class DbRepository {
 		}
 		session.close();
 	}
+	
 	
 	public static <T> void deleteEntity(Class<T> t,int id){
 		T result = null;

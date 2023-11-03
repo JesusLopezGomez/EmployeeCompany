@@ -1,3 +1,4 @@
+<%@page import="com.jacaranda.model.EmployeeProject"%>
 <%@page import="java.time.LocalDate"%>
 <%@page import="java.time.chrono.ChronoLocalDateTime"%>
 <%@page import="java.time.temporal.ChronoUnit"%>
@@ -29,19 +30,28 @@
 		            <div class="h1 fw-light">Añadir horas projecto</div>
 		          </div>
 		          <form>
+		          <%if(request.getParameter("start") == null){%>
 		            <div class="form-floating mb-3">
 						<label for="exampleInputEmail1" class="form-label">Project's</label>
-							<select id="companys" name="projects" class="custom-select" >
+							<select id="projects" name="projects" class="custom-select" >
 							<%
 								Employee e = (Employee) session.getAttribute("employee");
 								for (CompanyProject cp : e.getCompany().getCompanyProject()){
-									if(cp.getEnd().after(Date.valueOf(LocalDate.now()))){
-							%>
-							  <option value="<%=cp.getProject().getName()%>"><%=cp.getProject().getName()%></option>
-							 	<%}%>
-							 <%}%>
-							</select>
-		            </div>		          
+									if(cp.getEnd().after(Date.valueOf(LocalDate.now()))){%>
+											  <option value="<%=cp.getProject().getId()%>"><%=cp.getProject().getName()%></option>
+									<%}%>
+								<%}%>
+							 </select>
+							
+		            </div>
+		            <%}else if(request.getParameter("start") != null){
+		            	Project	p = DbRepository.find(Project.class, Integer.valueOf(request.getParameter("projects")));
+		            %>
+			            <div class="form-floating mb-3">
+							<label for="exampleInputEmail1" class="form-label">Project</label>
+			    			<input type="text" class="form-control" id="project" name="project" value="<%=p.getName()%>" readonly>
+			            </div>
+		            <%}%>		          
 		            <!-- Submit button -->
 		            <div class="d-grid">
 		            <%if(request.getParameter("start") == null){%>
@@ -58,12 +68,45 @@
 		            		int seconds = (int) ChronoUnit.SECONDS.between(((LocalDateTime) session.getAttribute("time")), 
 		            														LocalDateTime.now());
 		            		out.println(seconds);
-			            	session.setAttribute("cont",(int)session.getAttribute("cont")+seconds);
+		            		if(session.getAttribute("cont") == null){
+				            	session.setAttribute("cont",0);
+		            		}
+			            	session.setAttribute("cont",(int) session.getAttribute("cont")+seconds);
 		            		out.println(session.getAttribute("cont"));
 			            	session.removeAttribute("time");
 		            	}
 		            	%>
 		            <%}%>
+		            <button class="btn btn-danger btn-lg" id="save" value="save" type="submit" name="save">Save</button>
+		            <%if(request.getParameter("save") != null){
+		            	Project p = null;
+		            	if(request.getParameter("projects") != null){
+			            	 p = DbRepository.find(Project.class, Integer.valueOf(request.getParameter("projects")));
+		            	}
+		            	Employee e = null;
+		            	
+		            	try{
+			            	e = ((Employee)session.getAttribute("employee"));
+		            	}catch(Exception ex){
+		            		response.sendRedirect("msgError.jsp?error="+ex.getMessage());
+		            		return;
+		            	}
+		            	
+		            	int cont = 0;
+		            	if(session.getAttribute("cont") != null){
+			            	 cont = (int) session.getAttribute("cont");
+		            	}
+		            	
+		            	EmployeeProject ep = new EmployeeProject(p,e,cont);
+		            	
+		            	if(DbRepository.find(ep) != null){
+		            		ep.setMinute(DbRepository.find(ep).getMinute()+cont);
+		            		DbRepository.editEntity(ep);
+		            	}else{
+			            	DbRepository.addEntity(ep);
+		            	}
+		            	session.removeAttribute("cont");
+		            }%>
 		            </div>
 		          </form>
 		          <!-- End of contact form -->
