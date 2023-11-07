@@ -31,10 +31,10 @@
 		            <div class="h1 fw-light">Añadir horas projecto</div>
 		          </div>
 		          <form>
-		          <%if(request.getParameter("start") == null && session.getAttribute("time") == null){ //Cuando no le de a empezar le muestro los proyectos disponibles%>
+		          <%if(request.getParameter("start") == null ){ //Cuando no le de a empezar le muestro los proyectos disponibles%>
 		            <div class="form-floating mb-3">
 						<label for="exampleInputEmail1" class="form-label">Project's</label>
-							<select id="projects" name="projects" class="custom-select" >
+							<select id="projects" name="projects" class="custom-select" multiple="multiple">
 							<%
 								Employee e = (Employee) session.getAttribute("employee");
 								for (CompanyProject cp : e.getCompany().getCompanyProject()){
@@ -43,19 +43,17 @@
 									<%}%>
 								<%}%>
 							 </select>
-							
 		            </div>
-		            <%}else if(request.getParameter("start") != null || session.getAttribute("time") != null) {
+		            <%}else if(request.getParameter("start") != null ) {
 		            	//Cuando ya empieza recupero el proyecto que ha seleccionado y lo muestro
-		            	if(session.getAttribute("project") == null){
-			            	session.setAttribute("project", DbRepository.find(Project.class, Integer.valueOf(request.getParameter("projects"))));
-		            	}
+		            	out.println(request.getParameter("projects"));
+		            	Project	p = DbRepository.find(Project.class, Integer.valueOf(request.getParameter("projects")));
 		            %>
 			            <div class="form-floating mb-3">
 							<label for="exampleInputEmail1" class="form-label">Project</label>
-			    			<input type="text" class="form-control" id="project" name="project" value="<%=((Project)session.getAttribute("project")).getName()%>" readonly>
+			    			<input type="text" class="form-control" id="project" name="project" value="<%=p.getName()%>" readonly>
 			            	<!-- Oculto un input con el id para después recuperarla -->
-			            	<input type="text" class="form-control" id="idProject" name="idProject" value="<%=((Project)session.getAttribute("project")).getId()%>" hidden>
+			            	<input type="text" class="form-control" id="idProject" name="idProject" value="<%=p.getId()%>" hidden>
 			            </div>
 		            <%}%>		          
 		            <!-- Submit button -->
@@ -69,50 +67,6 @@
 		            	//Y también muestro un botón de guardar
 		            %>
 		            <button class="btn btn-danger btn-lg" id="save" value="save" type="submit" name="save">Save</button>
-		            <%}%>
-		            <%if(request.getParameter("save") != null){%>
-		            	<%//Cuando quiera guardar compruebo que el la session del tiempo no sea nula
-		            	if(session.getAttribute("time")!= null){
-		            		//Guardos los segundos que hay entre la fecha de la session y la fecha de ahora mismo
-		            		int seconds = (int) ChronoUnit.SECONDS.between(((LocalDateTime) session.getAttribute("time")), 
-		            														LocalDateTime.now());
-		            		if(session.getAttribute("cont") == null){ //Si la session de contador es nula la creo
-				            	session.setAttribute("cont",0);
-		            		}
-		            		//Ahora le asigno el tiempo que ya tenia más los segundos que he recuperado antes
-			            	session.setAttribute("cont",(int) session.getAttribute("cont")+seconds);
-		            		//Borro la session del tiempo
-			            	session.removeAttribute("time");
-			            	//Deje el projecto a nulo y despues lo busco con la id que he ocultado anteriormente
-			            	Project p = null;
-			            	if(request.getParameter("idProject") != null){
-				            	 p = DbRepository.find(Project.class, Integer.valueOf(request.getParameter("idProject")));
-			            	}
-			            	Employee e = null;
-			            	//Recupero el empleado de la session
-			            	try{
-				            	e = ((Employee)session.getAttribute("employee"));
-			            	}catch(Exception ex){
-			            		response.sendRedirect("msgError.jsp?error="+ex.getMessage());
-			            		return;
-			            	}
-			            	//Recupero el contador de la session
-			            	int cont = 0;
-			            	if(session.getAttribute("cont") != null){
-				            	 cont = (int) session.getAttribute("cont");
-			            	}
-			            	//Y creo un employeeProject con los datos recuperados
-			            	EmployeeProject ep = new EmployeeProject(p,e,cont);
-			            	//Si el employeeProject existe le edito los segundos y lo edito en la base de datos
-			            	if(DbRepository.find(ep) != null){
-			            		ep.setMinute(DbRepository.find(ep).getMinute()+cont);
-			            		DbRepository.editEntity(ep);
-			            	}else{//Y si no existe lo creo
-				            	DbRepository.addEntity(ep);
-			            	}//Borro la session de cont para que empieze a contar de nuevo
-			            	session.removeAttribute("cont");
-		            	}
-		            	%>
 		            <%}%>
 		            </div>
 		          <!-- End of contact form -->
