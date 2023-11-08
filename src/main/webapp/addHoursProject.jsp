@@ -22,6 +22,54 @@
 <body>
 	<%if(session.getAttribute("employee") != null){ /*Cuando se ha logeado muestro el contenido*/%>
 	<%@include file="nav.jsp" %>
+	
+		<%if(request.getParameter("save") != null){%>
+	       	<%//Cuando quiera guardar compruebo que el la session del tiempo no sea nula
+	       	if(session.getAttribute("time")!= null){
+	       		//Guardos los segundos que hay entre la fecha de la session y la fecha de ahora mismo
+	       		int seconds = (int) ChronoUnit.SECONDS.between(((LocalDateTime) session.getAttribute("time")), 
+	       														LocalDateTime.now());
+	       		if(session.getAttribute("cont") == null){ //Si la session de contador es nula la creo
+	         		session.setAttribute("cont",0);
+	       		}
+	       		//Ahora le asigno el tiempo que ya tenia más los segundos que he recuperado antes
+	        	session.setAttribute("cont",(int) session.getAttribute("cont")+seconds);
+	
+	        	//Deje el projecto a nulo y despues lo busco con la id que he ocultado anteriormente
+	        	Project p = null;
+	        	if(request.getParameter("idProject") != null){
+	         		p = DbRepository.find(Project.class, Integer.valueOf(request.getParameter("idProject")));
+	        	}
+	        	Employee e = null;
+	        	//Recupero el empleado de la session
+	        	try{
+	         	e = ((Employee)session.getAttribute("employee"));
+	        	}catch(Exception ex){
+	        		response.sendRedirect("msgError.jsp?error="+ex.getMessage());
+	        		return;
+	        	}
+	        	//Recupero el contador de la session
+	        	int cont = 0;
+	        	if(session.getAttribute("cont") != null){
+	         	 cont = (int) session.getAttribute("cont");
+	        	}
+	        	//Y creo un employeeProject con los datos recuperados
+	        	EmployeeProject ep = new EmployeeProject(p,e,cont);
+	        	//Si el employeeProject existe le edito los segundos y lo edito en la base de datos
+	        	if(DbRepository.find(ep) != null){
+	        		ep.setMinute(DbRepository.find(ep).getMinute()+cont);
+	        		DbRepository.editEntity(ep);
+	        	}else{//Y si no existe lo creo
+	         		DbRepository.addEntity(ep);
+	        	}//Borro la session de cont para que empieze a contar de nuevo
+	        	session.removeAttribute("cont");
+	        	//Borro la session del tiempo
+	        	session.removeAttribute("time"); 
+	        	//Borro la session del tiempo
+	        	session.removeAttribute("project"); 
+	       		}
+	       }%>
+	       
 		<div class="container px-5 my-5">
 		  <div class="row justify-content-center">
 		    <div class="col-lg-8">
@@ -60,60 +108,23 @@
 		            <%}%>		          
 		            <!-- Submit button -->
 		            <div class="d-grid">
-		            <%if(request.getParameter("start") == null){//Muestro el botón cuando no haya empezado%>
+		            <%if(request.getParameter("start") == null && session.getAttribute("time") == null){//Muestro el botón cuando no haya empezado%>
 		             	<button class="btn btn-primary btn-lg" id="start" value="start" type="submit" name="start">Start</button>
 		            <%}else{
 		            	//Y cuando empieze recupero la fecha de ahora mismo y la guardo en una session
-		            	LocalDateTime ldt = LocalDateTime.now();
-		            	session.setAttribute("time", ldt);
+		            	if(session.getAttribute("time") == null){
+			            	LocalDateTime ldt = LocalDateTime.now();
+			            	session.setAttribute("time", ldt);
+		            	}
 		            	//Y también muestro un botón de guardar
 		            %>
-		            <button class="btn btn-danger btn-lg" id="save" value="save" type="submit" name="save">Save</button>
+		            
+		            <%
+		            if(session.getAttribute("time") != null){ %>
+          		    	<button class="btn btn-danger btn-lg" id="save" value="save" type="submit" name="save">Save</button>
 		            <%}%>
-		            <%if(request.getParameter("save") != null){%>
-		            	<%//Cuando quiera guardar compruebo que el la session del tiempo no sea nula
-		            	if(session.getAttribute("time")!= null){
-		            		//Guardos los segundos que hay entre la fecha de la session y la fecha de ahora mismo
-		            		int seconds = (int) ChronoUnit.SECONDS.between(((LocalDateTime) session.getAttribute("time")), 
-		            														LocalDateTime.now());
-		            		if(session.getAttribute("cont") == null){ //Si la session de contador es nula la creo
-				            	session.setAttribute("cont",0);
-		            		}
-		            		//Ahora le asigno el tiempo que ya tenia más los segundos que he recuperado antes
-			            	session.setAttribute("cont",(int) session.getAttribute("cont")+seconds);
-		            		//Borro la session del tiempo
-			            	session.removeAttribute("time");
-			            	//Deje el projecto a nulo y despues lo busco con la id que he ocultado anteriormente
-			            	Project p = null;
-			            	if(request.getParameter("idProject") != null){
-				            	 p = DbRepository.find(Project.class, Integer.valueOf(request.getParameter("idProject")));
-			            	}
-			            	Employee e = null;
-			            	//Recupero el empleado de la session
-			            	try{
-				            	e = ((Employee)session.getAttribute("employee"));
-			            	}catch(Exception ex){
-			            		response.sendRedirect("msgError.jsp?error="+ex.getMessage());
-			            		return;
-			            	}
-			            	//Recupero el contador de la session
-			            	int cont = 0;
-			            	if(session.getAttribute("cont") != null){
-				            	 cont = (int) session.getAttribute("cont");
-			            	}
-			            	//Y creo un employeeProject con los datos recuperados
-			            	EmployeeProject ep = new EmployeeProject(p,e,cont);
-			            	//Si el employeeProject existe le edito los segundos y lo edito en la base de datos
-			            	if(DbRepository.find(ep) != null){
-			            		ep.setMinute(DbRepository.find(ep).getMinute()+cont);
-			            		DbRepository.editEntity(ep);
-			            	}else{//Y si no existe lo creo
-				            	DbRepository.addEntity(ep);
-			            	}//Borro la session de cont para que empieze a contar de nuevo
-			            	session.removeAttribute("cont");
-		            	}
-		            	%>
 		            <%}%>
+		            
 		            </div>
 		          <!-- End of contact form -->
          		   <button class="btn btn-info btn-ms mt-2" id="nameE" value="nameE" type="button" name="nameE"><%=((Employee)session.getAttribute("employee")).getFirstName()%></button>
@@ -121,7 +132,6 @@
 		   		       <button class="btn btn-danger btn-lg" id="logOut" value="logOut" type="submit" name="logOut">Log out</button>
 		          </form>
 		      </div>
-		      
 		      <%if(request.getParameter("logOut") != null){
 		    	  //Cuando le de al botón de logOut borro la session del empleado y lo mando al login
 		    	  	session.removeAttribute("employee");
