@@ -1,3 +1,8 @@
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="com.mysql.cj.x.protobuf.MysqlxDatatypes.Array"%>
+<%@page import="java.util.Arrays"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="com.jacaranda.model.EmployeeProject"%>
 <%@page import="java.time.LocalDate"%>
 <%@page import="java.time.chrono.ChronoLocalDateTime"%>
@@ -21,6 +26,8 @@
 </head>
 <body>
 	<%if(session.getAttribute("employee") != null){ /*Cuando se ha logeado muestro el contenido*/%>
+	
+	<%Map<Integer,LocalDateTime> mapProject = new HashMap<Integer,LocalDateTime>();%>
 	<%@include file="nav.jsp" %>
 		<div class="container px-5 my-5">
 		  <div class="row justify-content-center">
@@ -31,44 +38,26 @@
 		            <div class="h1 fw-light">Añadir horas projecto</div>
 		          </div>
 		          <form>
-		          <%if(request.getParameter("start") == null ){ //Cuando no le de a empezar le muestro los proyectos disponibles%>
 		            <div class="form-floating mb-3">
-						<label for="exampleInputEmail1" class="form-label">Project's</label>
-							<select id="projects" name="projects" class="custom-select" multiple="multiple">
+						<label for="exampleInputEmail1" class="form-label">Project's</label><br>
+							<table class="table">
 							<%
 								Employee e = (Employee) session.getAttribute("employee");
 								for (CompanyProject cp : e.getCompany().getCompanyProject()){
 									if(cp.getEnd().after(Date.valueOf(LocalDate.now()))){ //Aqui compruebo que el proyecto está activo y lo muestro%>
-											  <option value="<%=cp.getProject().getId()%>"><%=cp.getProject().getName()%></option>
+									<tr>
+										<td><%=cp.getProject().getName()%></td>
+										<%if(!mapProject.containsKey(cp.getProject().getId())){ %>
+											<td><button class="btn btn-primary" type="submit" value="<%=cp.getProject().getId()%>" name="start>">Empezar a trabajar</button></td>  		
+										<%}else{%>
+											<td><button class="btn btn-danger" type="submit" value="<%=cp.getProject().getId()%>" name="stop">Dejar de trabajar</button></td>  													
+										<%}%>
+									</tr>
 									<%}%>
 								<%}%>
-							 </select>
-		            </div>
-		            <%}else if(request.getParameter("start") != null ) {
-		            	//Cuando ya empieza recupero el proyecto que ha seleccionado y lo muestro
-		            	out.println(request.getParameter("projects"));
-		            	Project	p = DbRepository.find(Project.class, Integer.valueOf(request.getParameter("projects")));
-		            %>
-			            <div class="form-floating mb-3">
-							<label for="exampleInputEmail1" class="form-label">Project</label>
-			    			<input type="text" class="form-control" id="project" name="project" value="<%=p.getName()%>" readonly>
-			            	<!-- Oculto un input con el id para después recuperarla -->
-			            	<input type="text" class="form-control" id="idProject" name="idProject" value="<%=p.getId()%>" hidden>
-			            </div>
-		            <%}%>		          
+							</table>
+		            </div>		          
 		            <!-- Submit button -->
-		            <div class="d-grid">
-		            <%if(request.getParameter("start") == null){//Muestro el botón cuando no haya empezado%>
-		             	<button class="btn btn-primary btn-lg" id="start" value="start" type="submit" name="start">Start</button>
-		            <%}else{
-		            	//Y cuando empieze recupero la fecha de ahora mismo y la guardo en una session
-		            	LocalDateTime ldt = LocalDateTime.now();
-		            	session.setAttribute("time", ldt);
-		            	//Y también muestro un botón de guardar
-		            %>
-		            <button class="btn btn-danger btn-lg" id="save" value="save" type="submit" name="save">Save</button>
-		            <%}%>
-		            </div>
 		          <!-- End of contact form -->
          		   <button class="btn btn-info btn-ms mt-2" id="nameE" value="nameE" type="button" name="nameE"><%=((Employee)session.getAttribute("employee")).getFirstName()%></button>
 		        </div>
@@ -76,10 +65,17 @@
 		          </form>
 		      </div>
 		      
+		      
 		      <%if(request.getParameter("logOut") != null){
 		    	  //Cuando le de al botón de logOut borro la session del empleado y lo mando al login
 		    	  	session.removeAttribute("employee");
 					response.sendRedirect("./login.jsp");
+		      }
+		      
+		      if(request.getParameter("start") != null){
+			      	//TooDoo meter en el mapa el codigo de project y el tiempo de ahora
+		      }else if(request.getParameter("stop") != null){
+		      	//TooDoo comprobar en el mapa el codigo de project y comparar el tiempo del mapa con el de ahora
 		      }%>
 		    </div>
 		  </div>
