@@ -20,14 +20,60 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Añadir horas projecto</title>
+<title>Añadir horas varios projectos</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 	<%if(session.getAttribute("employee") != null){ /*Cuando se ha logeado muestro el contenido*/%>
 	
-	<%Map<Integer,LocalDateTime> mapProject = new HashMap<Integer,LocalDateTime>();%>
+		<%Map<Integer,LocalDateTime> mapProject = session.getAttribute("mapaProject") != null 
+													? (HashMap<Integer,LocalDateTime>) session.getAttribute("mapaProject") 
+															: new HashMap<Integer,LocalDateTime>();
+		
+	    if(request.getParameter("start") != null){
+	  	  try{		    		  
+	  	  	mapProject.put(Integer.valueOf(request.getParameter("start")), LocalDateTime.now());
+	  	  	session.setAttribute("mapaProject", mapProject);
+	  	  }catch(Exception ex){
+	  		  response.sendRedirect("msgError.jsp?error="+ex.getMessage());
+	  	  }
+	    }else if(request.getParameter("stop") != null){
+	   	  	try{		    	
+	   	  		
+	   	  		Project p = null;
+	   	  		
+	   	  		try{
+	   	  			p = DbRepository.find(Project.class, Integer.valueOf(request.getParameter("stop")));
+	   	  		}catch(Exception ex1){
+		   	  		  response.sendRedirect("msgError.jsp?error="+ex1.getMessage());
+	   	  		}
+	       		
+	   	  		int seconds = 0;
+	   	  		try{
+	   	  			seconds = (int) ChronoUnit.SECONDS.between(mapProject.get(Integer.valueOf(request.getParameter("stop"))), 
+							LocalDateTime.now());
+	   	  		}catch(Exception ex2){
+		   	  		  response.sendRedirect("msgError.jsp?error="+ex2.getMessage());
+	   	  		}
+	   	  		
+	   	  		EmployeeProject ep = new EmployeeProject(p,((Employee)session.getAttribute("employee")),seconds);
+	   	  		
+	        	if(DbRepository.find(ep) != null){
+	        		ep.setMinute(DbRepository.find(ep).getMinute()+seconds);
+	        		DbRepository.editEntity(ep);
+	        	}else{//Y si no existe lo creo
+	         		DbRepository.addEntity(ep);
+	        	}
+	   	  		
+	   	  	  	mapProject.remove(Integer.valueOf(request.getParameter("stop")));
+	   	  	  	session.setAttribute("mapaProject", mapProject);
+	   	 	}catch(Exception ex){
+	   	  		  response.sendRedirect("msgError.jsp?error="+ex.getMessage());
+	   	  	  }
+	    }
+	
+	%>
 	<%@include file="nav.jsp" %>
 		<div class="container px-5 my-5">
 		  <div class="row justify-content-center">
@@ -35,7 +81,7 @@
 		      <div class="card border-0 rounded-3 shadow-lg">
 		        <div class="card-body p-4">
 		          <div class="text-center">
-		            <div class="h1 fw-light">Añadir horas projecto</div>
+		            <div class="h1 fw-light">Añadir horas varios projectos</div>
 		          </div>
 		          <form>
 		            <div class="form-floating mb-3">
@@ -48,7 +94,7 @@
 									<tr>
 										<td><%=cp.getProject().getName()%></td>
 										<%if(!mapProject.containsKey(cp.getProject().getId())){ %>
-											<td><button class="btn btn-primary" type="submit" value="<%=cp.getProject().getId()%>" name="start>">Empezar a trabajar</button></td>  		
+											<td><button class="btn btn-primary" type="submit" value="<%=cp.getProject().getId()%>" name="start">Empezar a trabajar</button></td>  		
 										<%}else{%>
 											<td><button class="btn btn-danger" type="submit" value="<%=cp.getProject().getId()%>" name="stop">Dejar de trabajar</button></td>  													
 										<%}%>
@@ -70,13 +116,8 @@
 		    	  //Cuando le de al botón de logOut borro la session del empleado y lo mando al login
 		    	  	session.removeAttribute("employee");
 					response.sendRedirect("./login.jsp");
-		      }
-		      
-		      if(request.getParameter("start") != null){
-			      	//TooDoo meter en el mapa el codigo de project y el tiempo de ahora
-		      }else if(request.getParameter("stop") != null){
-		      	//TooDoo comprobar en el mapa el codigo de project y comparar el tiempo del mapa con el de ahora
 		      }%>
+		      
 		    </div>
 		  </div>
 		</div>
