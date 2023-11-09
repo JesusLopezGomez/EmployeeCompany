@@ -26,11 +26,15 @@
 </head>
 <body>
 	<%if(session.getAttribute("employee") != null){ /*Cuando se ha logeado muestro el contenido*/%>
-	
+		
+		<!-- Inicializo el mapa con el valor de la variable de session si esta no es nula
+		y si es una inicializo el mapa vacío -->
 		<%Map<Integer,LocalDateTime> mapProject = session.getAttribute("mapaProject") != null 
 													? (HashMap<Integer,LocalDateTime>) session.getAttribute("mapaProject") 
 															: new HashMap<Integer,LocalDateTime>();
 		
+		/*Cuando empieza a trabajar añado la key del proyecto con valor de ahora mismo al mapa y actualizo
+		la variable de session si no ha ocurrido ningun problema*/
 	    if(request.getParameter("start") != null){
 	  	  try{		    		  
 	  	  	mapProject.put(Integer.valueOf(request.getParameter("start")), LocalDateTime.now());
@@ -38,6 +42,12 @@
 	  	  }catch(Exception ex){
 	  		  response.sendRedirect("msgError.jsp?error="+ex.getMessage());
 	  	  }
+  	  	
+  	  	/*Cuando quiere parar de trabajar recupero el proyecto donde a trabajado, los segundos que ha trabajado
+  	  	estos los recupero con el id del proyecto buscando en el mapa, recupero el empleado de la session,
+  	  	creo un employeeProject con las claves que he recogido y el tiempo, una vez que lo creo compruebo si existe,
+  	  	si existe edito el tiempo de trabajo, y si no existe creo el employeeProject con las claves y el tiempo, y
+  	  	por último borro el id del proyecto del mapa y actualizo de nuevo la variable de session del mapa.*/
 	    }else if(request.getParameter("stop") != null){
 	   	  	try{		    	
 	   	  		
@@ -88,6 +98,10 @@
 						<label for="exampleInputEmail1" class="form-label">Project's</label><br>
 							<table class="table">
 							<%
+							/*Recupero la variable de session del empleado y recorro sus companyProjects,
+							me mostrará todos los nombres de los proyectos activos a dia de hoy, y mostraré el botón
+							de empezar a trabajar cuando no esté el id de proyecto en el mapa y mostraré el botón
+							de para de trabajar en caso contrario, es decir cuando el mapa contenga el id del proyecto*/
 								Employee e = (Employee) session.getAttribute("employee");
 								for (CompanyProject cp : e.getCompany().getCompanyProject()){
 									if(cp.getEnd().after(Date.valueOf(LocalDate.now()))){ //Aqui compruebo que el proyecto está activo y lo muestro%>
@@ -112,8 +126,8 @@
 		      </div>
 		      
 		      
+		      <!-- Cuando le de al botón de logOut borro la session del empleado y se redirecciona al login -->
 		      <%if(request.getParameter("logOut") != null){
-		    	  //Cuando le de al botón de logOut borro la session del empleado y lo mando al login
 		    	  	session.removeAttribute("employee");
 					response.sendRedirect("./login.jsp");
 		      }%>
@@ -121,7 +135,8 @@
 		    </div>
 		  </div>
 		</div>
-		<%}else{ //Lo mando al login en el caso de que no esté logeado
+		<!-- En el caso de no estar logeado se redirecciona al login -->
+		<%}else{ 
 			response.sendRedirect("./login.jsp");
 		}%>
 </body>
