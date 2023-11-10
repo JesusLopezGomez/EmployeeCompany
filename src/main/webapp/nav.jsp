@@ -7,7 +7,7 @@
 <title>nav</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-primary">
+<nav class="navbar navbar-expand-lg navbar-light bg-dark">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -36,6 +36,19 @@
         <a class="nav-link text-white" href="./addHoursMultipleProject.jsp">Añadir horas varios projectos</a>
       </li>
     </ul>
+    <form>
+		<div class="justify-content-end">
+			<%if(session.getAttribute("employee") != null){ %>
+				<button class="btn btn-outline-danger btn-lg" id="logOut" value="logOut" type="submit" name="logOut">Log out</button>
+			<%}%>
+		</div>
+	</form>
+      <!-- Cuando le de al botón de logOut borro la session del empleado y se redirecciona al login -->
+     <%if(request.getParameter("logOut") != null){
+   	  	session.removeAttribute("employee");
+		response.sendRedirect("./login.jsp");
+		return;
+     }%>
   </div>
 </nav>
 </body>

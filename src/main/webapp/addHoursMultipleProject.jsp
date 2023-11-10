@@ -93,6 +93,7 @@
 		          <div class="text-center">
 		            <div class="h1 fw-light">Añadir horas varios projectos</div>
 		          </div>
+		          <br>
 		          <form>
 		            <div class="form-floating mb-3">
 						<label for="exampleInputEmail1" class="form-label">Project's</label><br>
@@ -121,23 +122,15 @@
 		          <!-- End of contact form -->
          		   <button class="btn btn-info btn-ms mt-2" id="nameE" value="nameE" type="button" name="nameE"><%=((Employee)session.getAttribute("employee")).getFirstName()%></button>
 		        </div>
-		   		       <button class="btn btn-danger btn-lg" id="logOut" value="logOut" type="submit" name="logOut">Log out</button>
-		          </form>
+		         </form>
 		      </div>
-		      
-		      
-		      <!-- Cuando le de al botón de logOut borro la session del empleado y se redirecciona al login -->
-		      <%if(request.getParameter("logOut") != null){
-		    	  	session.removeAttribute("employee");
-					response.sendRedirect("./login.jsp");
-		      }%>
-		      
 		    </div>
 		  </div>
 		</div>
 		<!-- En el caso de no estar logeado se redirecciona al login -->
 		<%}else{ 
 			response.sendRedirect("./login.jsp");
+			return;
 		}%>
 </body>
 </html>

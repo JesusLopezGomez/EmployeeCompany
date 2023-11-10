@@ -129,14 +129,8 @@
 		          <!-- End of contact form -->
          		   <button class="btn btn-info btn-ms mt-2" id="nameE" value="nameE" type="button" name="nameE"><%=((Employee)session.getAttribute("employee")).getFirstName()%></button>
 		        </div>
-		   		       <button class="btn btn-danger btn-lg" id="logOut" value="logOut" type="submit" name="logOut">Log out</button>
-		          </form>
+		         </form>
 		      </div>
-		      <%if(request.getParameter("logOut") != null){
-		    	  //Cuando le de al botón de logOut borro la session del empleado y lo mando al login
-		    	  	session.removeAttribute("employee");
-					response.sendRedirect("./login.jsp");
-		      }%>
 		    </div>
 		  </div>
 		</div>
