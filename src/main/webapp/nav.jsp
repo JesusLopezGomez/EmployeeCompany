@@ -7,7 +7,7 @@
 <title>nav</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -39,7 +39,7 @@
     <form>
 		<div class="justify-content-end">
 			<%if(session.getAttribute("employee") != null){ %>
-				<button class="btn btn-outline-danger btn-lg" id="logOut" value="logOut" type="submit" name="logOut">Log out</button>
+				<button class="btn btn-outline-warning btn-lg" id="logOut" value="logOut" type="submit" name="logOut">Log out</button>
 			<%}%>
 		</div>
 	</form>
