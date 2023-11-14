@@ -11,7 +11,12 @@
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-
+<% 
+	if(session.getAttribute("employee") == null){
+		response.sendRedirect("./login.jsp");
+		return;
+	}
+%>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
@@ -21,7 +26,7 @@
         <a class="nav-link text-white" href="./listCompany.jsp">Lista compañias</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white" href="./listCompanyProject.jsp">Lista compañias empleados</a>
+        <a class="nav-link text-white" href="./listCompanyProject.jsp">Lista compañias projectos</a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-white" href="./addEmployee.jsp">Añadir empleado</a>

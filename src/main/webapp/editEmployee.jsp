@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.codec.digest.DigestUtils"%>
 <%@page import="java.sql.Date"%>
 <%@page import="com.jacaranda.model.Company"%>
 <%@page import="java.util.ArrayList"%>
@@ -17,6 +18,12 @@
 <body>
 	<%@include file="./nav.jsp" %>
 	<%
+	
+	if(session.getAttribute("employee") == null){
+		response.sendRedirect("./login.jsp");
+		return;
+	}
+	
 	Employee e = null;
 	ArrayList<Company> companys = null;
 	
@@ -58,8 +65,13 @@
     	  	}
         	Company c = DbRepository.find(Company.class, id);
         	 
-	    	e = new Employee(id,name,lastName,mail,gender,date,c);
-	    	 
+			e.setCompany(c);e.setDateOfBirth(date);e.setEmail(mail);e.setFirstName(name);
+			e.setGender(gender);e.setLastName(lastName);
+			
+			if(request.getParameter("password") != ""){
+				e.setPassword(request.getParameter("password"));
+			}
+        	
 	    	DbRepository.editEntity(e);
     	  	
 		}catch(Exception ex2){
@@ -68,8 +80,6 @@
 		}
 	}
 	
-	//if(session.getAttribute("rol") != null){
-
 	%>
 		<div class="container px-5 my-5">
 		  <div class="row justify-content-center">
@@ -129,7 +139,19 @@
 							 }%>
 							</select>
 		            </div>
+               		<div class="form-floating mb-3">
+						<label for="exampleInputEmail1" class="form-label">Password</label>
+		    			<input type="password" class="form-control" id="password" name="password" placeholder="**********">
+		            </div>
 		            
+                    <div class="form-floating mb-3">
+						<label for="exampleInputEmail1" class="form-label">Role</label>
+		    			<%if(((Employee)session.getAttribute("employee")).getRole().toString().equalsIgnoreCase("admin")){%>
+		    				<input type="text" class="form-control" id="role" name="role" value="<%=e.getRole()%>">
+		            	<%}else{%>
+        			    	<input type="text" class="form-control" id="role" name="role" readonly value="<%=e.getRole()%>">
+		            	<%}%>
+		            </div>
 		            <%}%>
 		            <!-- Submit button -->
 		            <div class="d-grid">
@@ -138,7 +160,6 @@
 		          </form>
 		          <!-- End of contact form -->
 		        </div>
-		        <%//}%>
 		      </div>
 		    </div>
 		  </div>

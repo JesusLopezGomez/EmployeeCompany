@@ -49,7 +49,7 @@
 								<td><%=e.getGender()%></td>
 								<td><%=e.getDateOfBirth()%></td>
 								<td><%=e.getCompany().getName()%></td>
-								<%if(session.getAttribute("rol").equals("ADMIN")){ %>
+								<%if(session.getAttribute("rol").toString().equalsIgnoreCase("ADMIN")){ %>
 								<td><a href="editEmployee.jsp?id=<%=e.getId()%>"><button type="button" class="btn btn-primary btn-lg">Editar</button></a></td>
 								<td><a href="deleteEmployee.jsp?id=<%=e.getId()%>"><button type="button" class="btn btn-primary btn-lg">Eliminar</button></a></td>
 								<%}%>

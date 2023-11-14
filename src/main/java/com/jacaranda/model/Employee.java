@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import com.jacaranda.exception.ExceptionUser;
 
 import jakarta.persistence.Entity;
@@ -35,34 +37,8 @@ public class Employee {
 	@OneToMany(fetch = FetchType.EAGER ,mappedBy="employee")
 	private List<EmployeeProject> employeeProject;
 	
-	public Employee(int id, String firstName, String lastName, String email, String gender, Date dateOfBirth,
-			Company company) {
-		super();
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.gender = gender;
-		this.dateOfBirth = dateOfBirth;
-		this.company = company;
-	}
-	
-	public Employee(int id, String firstName, String lastName, String email, String gender, Date dateOfBirth,
-			Company company, String password, String rol) {
-		super();
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.gender = gender;
-		this.dateOfBirth = dateOfBirth;
-		this.company = company;
-		this.password = password;
-		this.role = rol;
-	}
-	
 	public Employee(String firstName, String lastName, String email, String gender, Date dateOfBirth,
-			Company company) {
+			Company company, String password) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -70,6 +46,8 @@ public class Employee {
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
 		this.company = company;
+		setPassword(password);
+		this.role = "user";
 	}
 	
 	public Employee() {
@@ -136,8 +114,8 @@ public class Employee {
 		return password;
 	}
 
-	public void setPassword(String password) throws ExceptionUser {
-		this.password = password;
+	public void setPassword(String password){
+		this.password = DigestUtils.md5Hex(password);
 	}
 
 	public String getRole() {

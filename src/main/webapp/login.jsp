@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.codec.digest.DigestUtils"%>
 <%@page import="com.jacaranda.model.Employee"%>
 <%@page import="com.jacaranda.model.User"%>
 <%@page import="com.jacaranda.repository.DbRepository"%>
@@ -44,7 +45,7 @@
 			            			response.sendRedirect("msgError.jsp?error=" + e.getMessage());
 			            			return;
 								}
-								if(userFind != null && userFind.getPassword().equals(request.getParameter("password"))){
+								if(userFind != null && userFind.getPassword().equals(DigestUtils.md5Hex(request.getParameter("password")))){
 									session.setAttribute("rol", userFind.getRole());
 									session.setAttribute("employee", userFind);
 									response.sendRedirect("./listEmployee.jsp");

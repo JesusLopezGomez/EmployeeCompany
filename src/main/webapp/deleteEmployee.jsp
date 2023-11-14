@@ -86,7 +86,17 @@
 						<input type="text" class="form-control" id="companys" name="companys" placeholder="Enter dateOfBirth" value="<%=e.getCompany().getName()%>" readonly>
 		            </div>
 		            
-		            <!-- Submit button -->
+		            <div class="form-floating mb-3">
+						<label for="exampleInputEmail1" class="form-label">Password</label>
+		    			<input type="password" class="form-control" id="password" name="password" value="**********" required readonly>
+		            </div>
+		            
+		          	<div class="form-floating mb-3">
+						<label for="exampleInputEmail1" class="form-label">Role</label>
+        			    <input type="text" class="form-control" id="role" name="role" required readonly value="<%=e.getRole()%>">
+		            </div>
+		            
+        		    <!-- Submit button -->
 		            <div class="d-grid">
 		             	<button class="btn btn-danger btn-lg" id="submitButton" value="delete" type="submit" name="delete">Confirm</button>
 		             		<%if(request.getParameter("delete") != null){
@@ -99,6 +109,7 @@
 								}
 							}%>
 		            </div>
+		            
 		          </form>
 		          <%}else{
 		  			response.sendRedirect("msgError.jsp?error=No hay ningun empleado con ese id");

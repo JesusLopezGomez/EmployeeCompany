@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.codec.digest.DigestUtils"%>
 <%@page import="java.sql.Date"%>
 <%@page import="com.jacaranda.model.Employee"%>
 <%@page import="com.jacaranda.repository.DbRepository"%>
@@ -66,44 +67,63 @@
 									 <%}%>
 									</select>
 				            </div>
+				            
+        				    <div class="form-floating mb-3">
+								<label for="exampleInputEmail1" class="form-label">Password</label>
+				    			<input type="password" class="form-control" id="password" name="password" placeholder="Enter Password" required>
+				            </div>
+				            
+				            <div class="form-floating mb-3">
+								<label for="exampleInputEmail1" class="form-label">Confirm password</label>
+				    			<input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Repeat password" required>
+				            </div>
 				            <!-- Submit button -->
 				            <div class="d-grid">
 				              	<button class="btn btn-primary btn-lg" id="submitButton" type="submit" name="submit">Save</button>
 				            </div>
 				          </form>
 				        </div>
+					        <%if(request.getParameter("submit") != null){ 
+					      	  	String name = request.getParameter("fisrtName");
+					      	  	String lastName = request.getParameter("lastName");
+					      	  	String mail = request.getParameter("email");
+					      	  	String gender = request.getParameter("gender");
+					      	  	int id = Integer.valueOf(request.getParameter("companys"));;
+					      	  	Date date;
+							
+					      	  	try{	        	  		
+					       	  	date = Date.valueOf(request.getParameter("dateOfBirth"));
+					      	  	}catch(Exception e){
+					  				response.sendRedirect("msgError.jsp?error=Fecha erronea formato adecuado : yyyy-mm-dd");
+					  				return;
+					      	  	}
+					
+					      	  	String password = request.getParameter("password");
+					      	  	String confirmPassword = request.getParameter("confirmPassword");
+					
+					      	  	
+					      	  	if(password.equals(confirmPassword)){
+					       	  	Company c = DbRepository.find(Company.class, id);
+					       	  	
+					         		DbRepository.addEntity(new Employee(name,
+					         											lastName,
+					         											mail,
+					         											gender,
+					         											date,
+					         											c,
+					         											password));  		
+					      	  	}else{
+					      	  		out.println("Error las contraseñas introducidas no son iguales.");
+					      	  	}
+					        }%>	
 				      </div>
 				    </div>
 				  </div>
 				</div>
-	          <%if(request.getParameter("submit") != null){ 
-	        	  	String name = request.getParameter("fisrtName");
-	        	  	String lastName = request.getParameter("lastName");
-	        	  	String mail = request.getParameter("email");
-	        	  	String gender = request.getParameter("gender");
-	        	  	int id = Integer.valueOf(request.getParameter("companys"));;
-	        	  	Date date;
-	        	  	
-	        	  	try{	        	  		
-		        	  	date = Date.valueOf(request.getParameter("dateOfBirth"));
-	        	  	}catch(Exception e){
-	    				response.sendRedirect("msgError.jsp?error=Fecha erronea formato adecuado : yyyy-mm-dd");
-	    				return;
-	        	  	}
-
-	        	  	Company c = DbRepository.find(Company.class, id);
-	        	  	
-	          		DbRepository.addEntity(new Employee(name,
-	          											lastName,
-	          											mail,
-	          											gender,
-	          											date,
-	          											c));
-	          }%>	
-			<%}catch(Exception e){
-				response.sendRedirect("msgError.jsp?error="+e.getMessage());
-				return;
-			}%>
+				<%}catch(Exception e){
+					response.sendRedirect("msgError.jsp?error="+e.getMessage());
+					return;
+				}%>
 	
 </body>
 </html>
