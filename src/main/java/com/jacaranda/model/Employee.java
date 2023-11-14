@@ -7,6 +7,7 @@ import java.util.Objects;
 import com.jacaranda.exception.ExceptionUser;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -31,7 +32,7 @@ public class Employee {
 	@JoinColumn(name="idCompany")
 	private Company company;
 	
-	@OneToMany(mappedBy="employee")
+	@OneToMany(fetch = FetchType.EAGER ,mappedBy="employee")
 	private List<EmployeeProject> employeeProject;
 	
 	public Employee(int id, String firstName, String lastName, String email, String gender, Date dateOfBirth,
