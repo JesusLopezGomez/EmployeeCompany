@@ -17,12 +17,10 @@
 		session.invalidate();
 		response.sendRedirect("./login.jsp");
 		return;
-	}else if(request.getParameter("register") != null){
-		response.sendRedirect("./addEmployee.jsp");
 	}
 
 	if(session.getAttribute("employee") == null){
-		response.sendRedirect("./login.jsp");
+		response.sendRedirect("./login.jsp?error=Para acceder a la página debe iniciar sesión o registrarse");
 		return;
 	}
 %>

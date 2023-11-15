@@ -18,7 +18,9 @@
 			try{
 				employes = (ArrayList<Employee>) DbRepository.findAll(Employee.class);%>
 				<%@include file="./nav.jsp"%>
-				<%if(session.getAttribute("rol") != null){%>
+				<%if(session.getAttribute("employee") != null){
+				Employee es = (Employee)session.getAttribute("employee");
+				%>
 					
 				
 				<table class="table">
@@ -31,10 +33,10 @@
 							<th scope="col">Género</th>
 							<th scope="col">Fecha de nacimiento</th>
 							<th scope="col">Nombre Compañía</th>
-							<%if(session.getAttribute("rol").equals("ADMIN")){ %>
+							<%if(es.getRole().toString().equalsIgnoreCase("ADMIN")){ %>
 							<th scope="col">Editar</th>
 							<th scope="col">Eliminar</th>
-							<%} %>
+							<%}%>
 			
 						</tr>
 					</thread>
@@ -49,9 +51,11 @@
 								<td><%=e.getGender()%></td>
 								<td><%=e.getDateOfBirth()%></td>
 								<td><%=e.getCompany().getName()%></td>
-								<%if(session.getAttribute("rol").toString().equalsIgnoreCase("ADMIN")){ %>
+								<%if(es.getRole().toString().equalsIgnoreCase("ADMIN")){ %>
 								<td><a href="editEmployee.jsp?id=<%=e.getId()%>"><button type="button" class="btn btn-primary btn-lg">Editar</button></a></td>
 								<td><a href="deleteEmployee.jsp?id=<%=e.getId()%>"><button type="button" class="btn btn-primary btn-lg">Eliminar</button></a></td>
+								<%}else if(es.getId() == e.getId()){%>
+								<td><a href="editEmployee.jsp?id=<%=e.getId()%>"><button type="button" class="btn btn-primary btn-lg">Editar</button></a></td>
 								<%}%>
 							</tr>
 					<%}%>

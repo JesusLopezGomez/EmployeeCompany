@@ -18,70 +18,94 @@
 <body>
 	<%@include file="./nav.jsp" %>
 	<%
-	
-	if(session.getAttribute("employee") == null){
-		response.sendRedirect("./login.jsp");
-		return;
-	}
+	Employee es = (Employee)session.getAttribute("employee");
 	
 	Employee e = null;
 	ArrayList<Company> companys = null;
 	
-	try{
-		e = DbRepository.find(Employee.class, Integer.valueOf(request.getParameter("id")));
-	}catch(Exception ex){
-		response.sendRedirect("msgError.jsp?error=No has introducido id correcta");
-		return;
-	}
+	boolean verifyPassword = false;
+	boolean verifyPasswordIncorrect = false;
+	boolean invalidatePassword = false;
+	boolean validateModify = false;
 	
-	try{
-		companys = (ArrayList<Company>) DbRepository.findAll(Company.class);
-	}catch(Exception ex1){
-		response.sendRedirect("msgError.jsp?error="+ex1.getMessage());
-		return;
-	}
-	
-	if(request.getParameter("edit") != null){
-		try{
-    	  	String name = request.getParameter("firstName");
-    	  	String lastName = request.getParameter("lastName");
-    	  	String mail = request.getParameter("email");
-    	  	String gender = request.getParameter("gender");
-    	  	int id = 0;
-    	  	try{
-        	  	id = Integer.valueOf(request.getParameter("companys"));
-    	  	}catch(Exception ex4){
-				response.sendRedirect("msgError.jsp?error=Id de compañia incorrecto");
-				return;
-    	  	}
-
-    	  	Date date;		
-    	  	
-    	  	try{	        	  		
-        	  	date = Date.valueOf(request.getParameter("dateOfBirth"));
-    	  	}catch(Exception ex3){
-				response.sendRedirect("msgError.jsp?error=Fecha erronea formato adecuado : yyyy-mm-dd");
-				return;
-    	  	}
-        	Company c = DbRepository.find(Company.class, id);
-        	 
-			e.setCompany(c);e.setDateOfBirth(date);e.setEmail(mail);e.setFirstName(name);
-			e.setGender(gender);e.setLastName(lastName);
+	if(es.getRole().equals("ADMIN") || String.valueOf(es.getId()).equals(request.getParameter("id"))){
 			
-			if(request.getParameter("password") != ""){
-				e.setPassword(request.getParameter("password"));
-			}
-        	
-	    	DbRepository.editEntity(e);
-    	  	
-		}catch(Exception ex2){
-			response.sendRedirect("msgError.jsp?error=" + ex2.getMessage());
+		try{
+			e = DbRepository.find(Employee.class, Integer.valueOf(request.getParameter("id")));
+		}catch(Exception ex){
+			response.sendRedirect("msgError.jsp?error=No has introducido id correcta");
 			return;
 		}
-	}
+		
+		try{
+			companys = (ArrayList<Company>) DbRepository.findAll(Company.class);
+		}catch(Exception ex1){
+			response.sendRedirect("msgError.jsp?error="+ex1.getMessage());
+			return;
+		}
+		
+		if(request.getParameter("edit") != null){
+			try{
+	    	  	String name = request.getParameter("firstName");
+	    	  	String lastName = request.getParameter("lastName");
+	    	  	String mail = request.getParameter("email");
+	    	  	String gender = request.getParameter("gender");
+	    	  	int id = 0;
+	    	  	try{
+	        	  	id = Integer.valueOf(request.getParameter("companys"));
+	    	  	}catch(Exception ex4){
+					response.sendRedirect("msgError.jsp?error=Id de compañia incorrecto");
+					return;
+	    	  	}
 	
-	%>
-		<div class="container px-5 my-5">
+	    	  	Date date;		
+	    	  	
+	    	  	try{	        	  		
+	        	  	date = Date.valueOf(request.getParameter("dateOfBirth"));
+	    	  	}catch(Exception ex3){
+					response.sendRedirect("msgError.jsp?error=Fecha erronea formato adecuado : yyyy-mm-dd");
+					return;
+	    	  	}
+	        	Company c = DbRepository.find(Company.class, id);
+	        	 
+				e.setCompany(c);e.setDateOfBirth(date);e.setEmail(mail);e.setFirstName(name);
+				e.setGender(gender);e.setLastName(lastName);
+				
+				if(request.getParameter("password") != ""){
+					if(request.getParameter("password").toString().equals(request.getParameter("confirmPassword").toString())){
+						e.setPassword(request.getParameter("password"));
+						verifyPassword = true;
+					}else{
+						invalidatePassword = true;
+					}
+				}
+	        	
+		    	DbRepository.editEntity(e);
+				validateModify = true;
+	    	  	
+			}catch(Exception ex2){
+				response.sendRedirect("msgError.jsp?error=" + ex2.getMessage());
+				return;
+			}
+		}if(request.getParameter("verifyOldpwd") != null || (request.getParameter("oldpassword") != null && !request.getParameter("oldpassword").equals(""))){
+			verifyPassword = e.getPassword().equals(DigestUtils.md5Hex(request.getParameter("oldpassword").toString()));
+			verifyPasswordIncorrect = !verifyPassword;
+
+		}
+	}else{%>
+		<h3 class="text-info" align="center">Error los usuarios solo pueden editar sus datos, si tiene algún problema contacta con un admin.</h3>
+	<%}%>
+	
+	
+	<%if(e != null){/*Si el cine que hemos introducido es diferente a null muestro la informacion del cine*/ %>
+        <%if(invalidatePassword){%>
+        	<h3 class="text-info" align="center">Error las contraseñas deben coincidir</h3>
+        <%}else if(validateModify){%>
+        	<h3 class="text-info" align="center">Empleado modificado con éxito</h3>
+        <%}%>
+        <%if(es.getRole().toString().equalsIgnoreCase("admin") || verifyPassword){%>
+        <form>
+        <div class="container px-5 my-5">
 		  <div class="row justify-content-center">
 		    <div class="col-lg-8">
 		      <div class="card border-0 rounded-3 shadow-lg">
@@ -89,14 +113,11 @@
 		          <div class="text-center">
 		            <div class="h1 fw-light">Editar empleado</div>
 		          </div>
-				<%if(e != null){/*Si el cine que hemos introducido es diferente a null muestro la informacion del cine*/ %>
-		          <form>
 		            <!-- Cip Input -->
 		           	<div class="form-floating mb-3">
 		    			<label for="exampleInputEmail1" class="form-label">ID</label>
 		    			<input type="text" class="form-control" id="id" name="id" value='<%=request.getParameter("id")%>' readonly>
 		            </div>
-		           <!--<input type="text" class="form-control" id="id" name="id" value='' readonly> -->
 		            <div class="form-floating mb-3">
 		    			<label for="exampleInputEmail1" class="form-label">firstName</label>
 		    			<input type="text" class="form-control" id="firstName" name="firstName" value='<%=e.getFirstName()%>' required>
@@ -111,7 +132,11 @@
 		            <!-- Production year Input -->
 		            <div class="form-floating mb-3">
 						<label for="exampleInputEmail1" class="form-label">email</label>
-		    			<input type="email" step="1" class="form-control" id="email" name="email" placeholder="Enter email" value="<%=e.getEmail()%>" required>
+						<%if(verifyPassword){%>
+							<input type="email" step="1" class="form-control" id="email" name="email" placeholder="Enter email" value="<%=e.getEmail()%>" required readonly>						
+		            	<%}else{%>
+							<input type="email" step="1" class="form-control" id="email" name="email" placeholder="Enter email" value="<%=e.getEmail()%>" required>						
+		            	<%}%>
 		            </div>
 		            
 		            <!-- Secundary title Input -->
@@ -130,7 +155,7 @@
 						<label for="exampleInputEmail1" class="form-label">Company's</label>
 							<select id="companys" name="companys" class="custom-select" required>
 							<%
-								for (Company c : companys ){
+								for (Company c : companys){
 									if(c.getId() == e.getCompany().getId()){%>
 										<option value="<%=c.getId()%>" selected><%=c.getName()%></option>
 									<%}else{ %>
@@ -140,29 +165,60 @@
 							</select>
 		            </div>
                		<div class="form-floating mb-3">
-						<label for="exampleInputEmail1" class="form-label">Password</label>
-		    			<input type="password" class="form-control" id="password" name="password" placeholder="**********">
-		            </div>
-		            
+       				    <div class="form-floating mb-3">
+							<label for="exampleInputEmail1" class="form-label">New password</label>
+			    			<input type="password" class="form-control" id="password" name="password" placeholder="Enter new password">
+			            </div>
+			            
+			            <div class="form-floating mb-3">
+							<label for="exampleInputEmail1" class="form-label">Confirm password</label>
+			    			<input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Repeat new password">
+			            </div>          	
+		           	</div>
                     <div class="form-floating mb-3">
 						<label for="exampleInputEmail1" class="form-label">Role</label>
-		    			<%if(((Employee)session.getAttribute("employee")).getRole().toString().equalsIgnoreCase("admin")){%>
-		    				<input type="text" class="form-control" id="role" name="role" value="<%=e.getRole()%>">
+						<%if(verifyPassword){%>
+        			    	<input type="text" class="form-control" id="role" name="role" value="<%=e.getRole()%>" readonly>
 		            	<%}else{%>
-        			    	<input type="text" class="form-control" id="role" name="role" readonly value="<%=e.getRole()%>">
+        			    	<input type="text" class="form-control" id="role" name="role" value="<%=e.getRole()%>">
 		            	<%}%>
 		            </div>
-		            <%}%>
+		            
+		            <input type="text" class="form-control"  id="oldpassword" name="oldpassword" value="<%=request.getParameter("oldpassword") != null ? request.getParameter("oldpassword") : "" %>" hidden>
 		            <!-- Submit button -->
 		            <div class="d-grid">
-		             	<button class="btn btn-danger btn-lg" id="submitButton" value="edit" type="submit" name="edit">Confirm</button></a>
+		             	<button class="btn btn-danger btn-lg" id="submitButton" value="edit" type="submit" name="edit">Confirm</button>
 		            </div>
-		          </form>
 		          <!-- End of contact form -->
 		        </div>
 		      </div>
 		    </div>
 		  </div>
 		</div>
+		</form>
+        <%}else{%>
+        <form>
+        <%if(verifyPasswordIncorrect){%>
+        	<h3 class="text-info" align="center">Contraseña incorrecta</h3>
+        <%}%>
+			<div class="container px-5 my-5">
+				<div class="row justify-content-center">
+					<div class="col-lg-8">
+						<div class="card border-0 rounded-3 shadow-lg">
+							<div class="card-body p-4">
+		 						<div class="h1 fw-light text-center">Verify password</div>
+								<label for="exampleInputEmail1" class="form-label">Old password</label> 
+								<input type="text" class="form-control" id="id" name="id" value="<%=request.getParameter("id")%>" hidden>
+								<input type="password" class="form-control"  id="oldpassword" name="oldpassword" placeholder="Enter your old password">
+								<br>
+								<button class="btn btn-outline-success btn-sm" id="verifyOldpwd" value="verifyOldpwd" type="submit" name="verifyOldpwd">Verify</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<%}%>	
+	<%}%>
 </body>
 </html>

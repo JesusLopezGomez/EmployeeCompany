@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
+		<h3 class="text-info" align="center"><%=request.getParameter("error") != null ? request.getParameter("error") : ""%></h3>
 		<div class="container px-5 my-5">
 		  <div class="row justify-content-center">
 		    <div class="col-lg-8">
@@ -36,7 +37,10 @@
 		            <!-- Submit button -->
 		            <div class="d-grid">
 		             	<button class="btn btn-outline-primary btn-lg" id="submitButton" value="login" type="submit" name="login">Login</button>
+     					<a href="./registerEmployee.jsp"><button class="btn btn-outline-success btn-lg" id="register" value="register" type="button" name="register">Register</button></a>		
 						
+		            </div>
+		          </form>
 						<%
 						Employee userFind;
 							if(request.getParameter("login") != null){
@@ -47,18 +51,15 @@
 			            			return;
 								}
 								if(userFind != null && userFind.getPassword().equals(DigestUtils.md5Hex(request.getParameter("password")))){
-									session.setAttribute("rol", userFind.getRole());
 									session.setAttribute("employee", userFind);
 									response.sendRedirect("./listEmployee.jsp");
+									return;
 								}else{
 									out.println("Id o contraseña incorrecto");
 								}
 							}
 						%>
-		            </div>
-		          </form>
 		          <br>
-     				<a href="./addEmployee.jsp?register=yes"><button class="btn btn-outline-success btn-lg" id="register" value="register" type="button" name="register">Register</button></a>		
 		          <!-- End of contact form -->
 		        </div>
 		      </div>
