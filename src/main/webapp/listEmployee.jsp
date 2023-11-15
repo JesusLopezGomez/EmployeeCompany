@@ -54,7 +54,7 @@
 								<td><a href="deleteEmployee.jsp?id=<%=e.getId()%>"><button type="button" class="btn btn-primary btn-lg">Eliminar</button></a></td>
 								<%}%>
 							</tr>
-					<%}session.removeAttribute("rol");%>
+					<%}%>
 				</table>
 				<%}else{
 					response.sendRedirect("./login.jsp");

@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.jacaranda.exception.ExceptionUser;
+import com.jacaranda.repository.EmployeeRepository;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,7 +35,7 @@ public class Employee {
 	@JoinColumn(name="idCompany")
 	private Company company;
 	
-	@OneToMany(fetch = FetchType.EAGER ,mappedBy="employee")
+	@OneToMany(mappedBy="employee")
 	private List<EmployeeProject> employeeProject;
 	
 	public Employee(String firstName, String lastName, String email, String gender, Date dateOfBirth,
@@ -124,6 +125,14 @@ public class Employee {
 
 	public void setRole(String rol) {
 		this.role = rol;
+	}
+
+	public List<EmployeeProject> getEmployeeProject() throws Exception {
+		return EmployeeRepository.getEmployeeProjects(this.id);
+	}
+
+	public void setEmployeeProject(List<EmployeeProject> employeeProject) {
+		this.employeeProject = employeeProject;
 	}
 
 	@Override

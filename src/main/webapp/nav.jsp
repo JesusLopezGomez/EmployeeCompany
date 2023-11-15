@@ -12,6 +12,15 @@
     <span class="navbar-toggler-icon"></span>
   </button>
 <% 
+	// Cuando le de al botón de logOut borro la session del empleado y se redirecciona al login -->
+	if(request.getParameter("logOut") != null){
+		session.invalidate();
+		response.sendRedirect("./login.jsp");
+		return;
+	}else if(request.getParameter("register") != null){
+		response.sendRedirect("./addEmployee.jsp");
+	}
+
 	if(session.getAttribute("employee") == null){
 		response.sendRedirect("./login.jsp");
 		return;
@@ -48,12 +57,6 @@
 			<%}%>
 		</div>
 	</form>
-      <!-- Cuando le de al botón de logOut borro la session del empleado y se redirecciona al login -->
-     <%if(request.getParameter("logOut") != null){
-   	  	session.removeAttribute("employee");
-		response.sendRedirect("./login.jsp");
-		return;
-     }%>
   </div>
 </nav>
 </body>

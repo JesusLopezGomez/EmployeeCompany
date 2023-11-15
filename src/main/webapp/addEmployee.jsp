@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="../style/style.css">
 </head>
 <body>
-	<%
+	<%	
 		ArrayList<Company> Companys = null;
 			try{
 				Companys = (ArrayList<Company>) DbRepository.findAll(Company.class);%>
@@ -27,7 +27,7 @@
 				      <div class="card border-0 rounded-3 shadow-lg">
 				        <div class="card-body p-4">
 				          <div class="text-center">
-				            <div class="h1 fw-light">Añadir empleado</div>
+				            <div class="h1 fw-light">Registrar empleado</div>
 				          </div>
 				
 				          <form method="get">
@@ -105,13 +105,13 @@
 					      	  	if(password.equals(confirmPassword)){
 					       	  	Company c = DbRepository.find(Company.class, id);
 					       	  	
-					         		DbRepository.addEntity(new Employee(name,
-					         											lastName,
-					         											mail,
-					         											gender,
-					         											date,
-					         											c,
-					         											password));  		
+						       	DbRepository.addEntity(new Employee(name,
+											lastName,
+											mail,
+											gender,
+											date,
+											c,
+											password));  		
 					      	  	}else{
 					      	  		out.println("Error las contraseñas introducidas no son iguales.");
 					      	  	}

@@ -35,7 +35,8 @@
 		            
 		            <!-- Submit button -->
 		            <div class="d-grid">
-		             	<button class="btn btn-primary btn-lg" id="submitButton" value="login" type="submit" name="login">Login</button>
+		             	<button class="btn btn-outline-primary btn-lg" id="submitButton" value="login" type="submit" name="login">Login</button>
+						
 						<%
 						Employee userFind;
 							if(request.getParameter("login") != null){
@@ -56,6 +57,8 @@
 						%>
 		            </div>
 		          </form>
+		          <br>
+     				<a href="./addEmployee.jsp?register=yes"><button class="btn btn-outline-success btn-lg" id="register" value="register" type="button" name="register">Register</button></a>		
 		          <!-- End of contact form -->
 		        </div>
 		      </div>
