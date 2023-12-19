@@ -19,7 +19,7 @@ public class EmployeeRepository {
 			session = BdUtil.getSessionFactory().openSession();
 			
 			SelectionQuery<EmployeeProject> queryEmployeeProject = (SelectionQuery<EmployeeProject>)
-					session.createNamedQuery("select * from employeeProject where idEmployee = ?1",EmployeeProject.class);
+					session.createNativeQuery("select * from employeeProject where idEmployee = ?1",EmployeeProject.class);
 			queryEmployeeProject.setParameter(1, idEmployee);
 			listEmployeeProject = (ArrayList<EmployeeProject>) queryEmployeeProject.getResultList();
  		}catch (Exception e) {
@@ -36,7 +36,7 @@ public class EmployeeRepository {
 		
 		try {
 			session = BdUtil.getSessionFactory().openSession();
-			transaction = session.getTransaction();
+			transaction = session.beginTransaction();
 		}catch (Exception e) {
 			throw new Exception("Error al conectar con la base de datos " + e.getMessage());
 		}
